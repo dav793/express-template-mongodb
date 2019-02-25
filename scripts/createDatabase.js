@@ -1,12 +1,12 @@
-use express-example;
+use sandbox;
 
 db.createCollection("posts");
 
 db.createUser({
-    user: "express-example-root",
-    pwd: "1234",
+    user: "sandbox",
+    pwd: "12345678",
     roles: [
-        {role: "readWrite", db: "express-example"},
-        {role: "dbOwner", db: "express-example"}
+        {role: "readWrite", db: "sandbox"},
+        {role: "dbOwner", db: "sandbox"}
     ]
 });

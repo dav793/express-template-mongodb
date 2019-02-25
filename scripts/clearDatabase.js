@@ -1,5 +1,5 @@
-use express-example;
+use sandbox;
 
-db.dropUser("express-example-root");
+db.dropUser("sandbox");
 
 db.posts.drop();
