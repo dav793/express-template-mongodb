@@ -73,3 +73,48 @@ module.exports.findPostsByTags = (tags: string[], callback: (err: any, posts?: I
             callback(null, posts);
     });
 };
+
+/**
+ * find all documents that contain ANY of the case-insensitive words in <searchText> in one or more of the following fields:
+ *  - author
+ *  - title
+ *  - tags
+ *
+ * @param string searchText
+ * @param (err: any, posts: IPostModel[])=>{} callback
+ */
+module.exports.searchPosts = (searchText: string, callback: (err: any, posts?: IPostModel[]) => {}) => {
+
+    const tokens = searchText.split(' ');
+
+    let tokenExpressions = tokens.map(token => {
+        return { $regex: '.*' + token + '.*', $options: 'i' };
+    });
+
+    let conditions = {
+        $or: [
+            {
+                $or: tokenExpressions.map(expr => {
+                    return { author: expr };
+                })
+            },
+            {
+                $or: tokenExpressions.map(expr => {
+                    return { title: expr };
+                })
+            },
+            {
+                $or: tokenExpressions.map(expr => {
+                    return { tags: {$elemMatch: expr} };
+                })
+            },
+        ]
+    };
+
+    Post.find(conditions, (err: any, posts: IPostModel[]) => {
+        if (err)
+            callback(err);
+        else
+            callback(null, posts);
+    });
+};

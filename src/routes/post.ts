@@ -14,10 +14,16 @@ export class PostRouter {
 
     init() {
         this.router.get('/', (req: Request, res: Response, next) => {
-            postController.getPosts((err: any, posts: IPostModel[]) => {
-                if (err) next(err);
-                else res.json(posts);
-            });
+            if (req.body && req.body.searchText)
+                postController.searchPosts(req.body.searchText, (err: any, posts: IPostModel[]) => {
+                    if (err) next(err);
+                    else res.json(posts);
+                });
+            else
+                postController.getPosts((err: any, posts: IPostModel[]) => {
+                    if (err) next(err);
+                    else res.json(posts);
+                });
         });
 
         this.router.post('/', (req: Request, res: Response, next) => {
